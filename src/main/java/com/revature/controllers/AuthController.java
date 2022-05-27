@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(origins = "https://production.dcs2jw2334qwo.amplifyapp.com/", allowCredentials = "true")
 public class AuthController{
 
     private final AuthService authService;
