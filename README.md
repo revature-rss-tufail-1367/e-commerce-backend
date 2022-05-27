@@ -42,6 +42,12 @@ After that, running the command:
 ### `npm start` 
 within the directory will open the application in your browser. 
 
+----------
+## Docker instructions
+To download the image from docker, enter the command:
+### `docker pull murryf/e-commerce`
+
+in the directory of your choosing. Open with your Docker desktop and run as a containerized image.
 
 
 ## Happy coding!

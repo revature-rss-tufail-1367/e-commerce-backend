@@ -88,13 +88,18 @@ public class User {
     /**
      * Encrypt an existing password
      */
-    public void encryptPassword() throws RuntimeException
+    public void encryptAndSetPassword() throws RuntimeException
     {
-        KeySpec spec = new PBEKeySpec(getPassword().toCharArray(),this.getSaltBytes(), 65536, 128);
+        this.password = encryptPassword(getPassword(),this.getSaltBytes());
+    }
+
+    public static String encryptPassword(String password, byte[] salt) throws RuntimeException
+    {
+        KeySpec spec = new PBEKeySpec(password.toCharArray(),salt, 65536, 128);
         try {
             SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             byte[] hash = f.generateSecret(spec).getEncoded();
-            this.password = new String(hash, StandardCharsets.ISO_8859_1);
+            return new String(hash, StandardCharsets.ISO_8859_1);
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }

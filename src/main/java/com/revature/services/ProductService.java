@@ -16,7 +16,7 @@ public interface ProductService {
     Product save(Product product);
 
     List<Product> saveAll(List<Product> productList, List<ProductInfo> metadata);
-  
+
     /**
      * Filters the list of product names and descriptions based on whether the searchParam is contained or the total list
      * if an empty string is supplied.
@@ -26,5 +26,5 @@ public interface ProductService {
      */
     List<Product> searchProduct(String searchParam);
 
-    void delete(int id);
+    public void delete(int id);
 }

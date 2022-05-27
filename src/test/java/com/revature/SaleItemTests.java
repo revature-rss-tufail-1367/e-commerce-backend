@@ -17,7 +17,7 @@ public class SaleItemTests {
 
     @Test
     void createUpdatedEntity(){
-        Product product = productService.save(new Product(9,3,10,12.00,8.50,"hat's are nice","imageURL","hat",true));
+        Product product = productService.save(new Product(9,3,12.00,10,"hat's are nice","imageURL","hat",true));
         Assertions.assertNotNull(product);
     }
 
@@ -26,4 +26,5 @@ public class SaleItemTests {
         List<Product> sales = productService.findSaleItems();
         Assertions.assertNotEquals(productService.findAll().size(),sales.size());
     }
+
 }

@@ -1,11 +1,10 @@
 
 
-INSERT INTO product (id, quantity, price,sale_rate,sale_flat, description, image, name,is_sale) VALUES (
+INSERT INTO product (id, quantity, price,sale_rate, description, image, name,is_sale) VALUES (
     1,
     10,
     20.00,
     15,
-    3.25,
     'A nice pair of headphones',
     'https://rss-p3-202203.s3.amazonaws.com/resources/images/headphone.png',
     'Headphones',
@@ -16,7 +15,6 @@ INSERT INTO product (id, quantity, price,sale_rate,sale_flat, description, image
     5,
     45.00,
     30,
-    10.00,
     'A nice TeeShirt',
     'https://d3o2e4jr3mxnm3.cloudfront.net/Mens-Jake-Guitar-Vintage-Crusher-Tee_68382_1_lg.png',
     'TeeShirt',
@@ -27,7 +25,6 @@ INSERT INTO product (id, quantity, price,sale_rate,sale_flat, description, image
     20,
     2.50,
     10,
-    1.00,
     'A reusable shopping bag',
     'https://images.ctfassets.net/5gvckmvm9289/3BlDoZxSSjqAvv1jBJP7TH/65f9a95484117730ace42abf64e89572/Noissue-x-Creatsy-Tote-Bag-Mockup-Bundle-_4_-2.png',
     'Shopping Bag',
@@ -38,7 +35,6 @@ INSERT INTO product (id, quantity, price,sale_rate,sale_flat, description, image
     20,
     10.00,
     20,
-    2.35,
     'A fancy cap for a fancy person',
     'https://d3o2e4jr3mxnm3.cloudfront.net/Rocket-Vintage-Chill-Cap_66374_1_lg.png',
     'Baseball Cap',
@@ -49,7 +45,6 @@ INSERT INTO product (id, quantity, price,sale_rate,sale_flat, description, image
     3,
     80.00,
     10,
-    8.00,
     'A nice coat',
     'https://www.pngarts.com/files/3/Women-Jacket-PNG-High-Quality-Image.png',
     'Coat',
