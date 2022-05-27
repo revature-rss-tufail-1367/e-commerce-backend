@@ -28,7 +28,7 @@ jobs:
         cache: maven
 
     - name: Build With Maven
-      run: mvn -B package --file pom.xml -Dmaven.test.skip
+      run: mvn -B package --file pom.xml
       env:
         LOCALEMAIL: ${{secrets.LOCALEMAIL}}
         EMAILPASSWORD: ${{secrets.EMAILPASSWORD}}
