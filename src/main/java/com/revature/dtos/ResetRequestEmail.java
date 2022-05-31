@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResetRequest {
+public class ResetRequestEmail {
     private String email;
 
 }

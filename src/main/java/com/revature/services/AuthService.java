@@ -1,5 +1,6 @@
 package com.revature.services;
 
+import com.revature.exceptions.ExpiredRequestException;
 import com.revature.models.User;
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ public interface AuthService {
     void forgotPassword(String email);
 
     Optional<User> findByUserId(Integer id);
+    User resetPassword(String password,int resetId) throws ExpiredRequestException;
 
     Optional<User> findByEmail(String email);
 }

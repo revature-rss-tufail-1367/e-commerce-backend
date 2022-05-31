@@ -1,5 +1,6 @@
 package com.revature.advice;
 
+import com.revature.exceptions.ExpiredRequestException;
 import com.revature.exceptions.NotLoggedInException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,4 +19,12 @@ public class RestExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMessage);
     }
+
+    @ExceptionHandler(ExpiredRequestException.class)
+   public ResponseEntity<Object> handleExpiredRequestException(HttpServletRequest request, ExpiredRequestException exception) {
+
+        String errorMessage = "The password reset request expired. Please try again. Links expire in 24 hours.";
+
+        return ResponseEntity.status(HttpStatus.RESET_CONTENT).body(errorMessage);
+   }
 }

@@ -17,5 +17,5 @@ public interface UserService {
      * A method to send an email for password resets
      * @param email the email that the password reset confirmation will be sent to
      */
-    void sendEmail(String email);
+    void sendEmail(String email, int id);
 }

@@ -59,3 +59,9 @@ INSERT INTO users (id, email, password, first_name, last_name, salt) VALUES (
     'User',
     'NotSoRandomSalt?'
 );
+
+INSERT into reset_request (id,time_stamp,user_id) VALUES(
+    1,
+    12345678,
+    1
+);
