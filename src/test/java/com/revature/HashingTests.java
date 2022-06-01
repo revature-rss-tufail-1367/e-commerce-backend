@@ -4,6 +4,7 @@ import com.revature.controllers.AuthController;
 import com.revature.dtos.LoginRequest;
 import com.revature.dtos.RegisterRequest;
 import com.revature.models.User;
+import org.apache.tomcat.util.buf.HexUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import org.springframework.mock.web.MockHttpSession;
 
 import java.security.SecureRandom;
 import java.util.Arrays;
-import java.util.HexFormat;
 
 @SpringBootTest
 public class HashingTests{
@@ -22,7 +22,7 @@ public class HashingTests{
     AuthController authController;
 
     static String getDefaultSalt(){
-        return HexFormat.of().formatHex("NotSoRandomSalt?".getBytes());
+        return HexUtils.toHexString("NotSoRandomSalt?".getBytes());
     }
 
     /**
@@ -33,8 +33,8 @@ public class HashingTests{
     public void HashTest(){
         for (int j = 0; j < 1_000; j++) {
             byte[] salt = SaltMaker();
-            String parsed = HexFormat.of().formatHex(salt);
-            byte[] unSalt = HexFormat.of().parseHex(parsed);
+            String parsed = HexUtils.toHexString(salt);
+            byte[] unSalt = HexUtils.fromHexString(parsed);
             Assertions.assertTrue(Arrays.equals(salt, unSalt));
         }
     }
