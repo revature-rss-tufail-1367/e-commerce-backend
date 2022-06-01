@@ -54,10 +54,10 @@ INSERT INTO product (id, quantity, price,sale_rate, description, image, name,is_
 INSERT INTO users (id, email, password, first_name, last_name, salt) VALUES (
     1,
     'testuser@gmail.com',
-    '*eÓôéHÏÑ_£XÔ', --    'password',
+    '8bc08e2409631e846533b6140dfc541d', --    'password',
     'Test',
     'User',
-    'NotSoRandomSalt?'
+    '4e6f74536f52616e646f6d53616c743f'
 );
 
 INSERT into reset_request (id,time_stamp,user_id) VALUES(

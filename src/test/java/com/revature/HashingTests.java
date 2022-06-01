@@ -11,17 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpSession;
 
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import java.io.BufferedReader;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 import java.util.Arrays;
+import java.util.HexFormat;
 
 @SpringBootTest
 public class HashingTests{
@@ -29,47 +21,63 @@ public class HashingTests{
     @Autowired
     AuthController authController;
 
+    static String getDefaultSalt(){
+        return HexFormat.of().formatHex("NotSoRandomSalt?".getBytes());
+    }
+
     /**
      * Salt Maker is implemented in models.User.getSalt() method
-     * takes roughly 6.7 seconds for Jalil's computer for 1 million tests
+     * takes roughly 6 seconds for Jalil's computer for 1 million tests
      */
     @Test
     public void HashTest(){
-        for (int j = 0; j < 1000; j++) {
+        for (int j = 0; j < 1_000; j++) {
             byte[] salt = SaltMaker();
-            String parsed = new String(salt, StandardCharsets.ISO_8859_1);
-            byte[] unSalt = parsed.getBytes(StandardCharsets.ISO_8859_1);
+            String parsed = HexFormat.of().formatHex(salt);
+            byte[] unSalt = HexFormat.of().parseHex(parsed);
             Assertions.assertTrue(Arrays.equals(salt, unSalt));
         }
     }
 
-    // takes 1 minute 20 secs on Jalil's computer for 1k tests
+    // takes 1 minute 20 secs on Jalil's computer for 1k tests using PBKDF2WithHmacSHA1
+    // takes 2 minute 20 secs on Jalil's computer for 1k tests using PBKDF2WithHmacSHA256
     @Test
     public void UserHashTest(){
-        User testUser = new User(1, "testuser@gmail.com", "password", "test", "user", "NotSoRandomSalt?");
-        for (int j = 0; j < 50; j++) {
-            testUser.setPassword("password");
-            testUser.setSalt(null);
-            testUser.encryptAndSetPassword();
+        User testUser = new User(1, "testuser@gmail.com", "password", "test", "user", getDefaultSalt());
+        for (int j = 0; j < 10; j++) {
+            testUser.encryptAndSetPassword("password");
             Assertions.assertNotEquals("password", testUser.getPassword());
+            Assertions.assertEquals(User.encryptPassword("password", testUser.getSaltBytes()), testUser.getPassword());
         }
     }
 
-
     @Test
     void TestPassword(){
-        User testUser = new User(1, "testuser@gmail.com", "password", "test", "user", "NotSoRandomSalt?");
-        testUser.encryptAndSetPassword();
+        User testUser = new User(1, "testuser@gmail.com", "password", "test", "user", getDefaultSalt());
+        testUser.encryptAndSetPassword(testUser.getPassword());
         System.out.println(testUser.getPassword());
     }
 
     @Test
-    public void RegisterTest(){
+    public void RegisterSuccessTest(){
         RegisterRequest request = new RegisterRequest();
+        request.setFirstName("test");
+        request.setLastName("user");
         request.setEmail("newuser@gmail.com");
         request.setPassword("password");
         ResponseEntity<User> test = authController.register(request);
         Assertions.assertTrue(test.getStatusCodeValue() >= 200 && test.getStatusCodeValue() < 300);
+    }
+
+    @Test
+    public void failedRegisterTest(){
+        RegisterRequest request = new RegisterRequest();
+        request.setFirstName("test");
+        request.setLastName("user");
+        request.setEmail("testuser@gmail.com");//existing email
+        request.setPassword("password");
+        ResponseEntity<User> test = authController.register(request);
+        Assertions.assertFalse(test.getStatusCodeValue() >= 200 && test.getStatusCodeValue() < 300);
     }
 
     @Test
@@ -96,53 +104,5 @@ public class HashingTests{
         SecureRandom random = new SecureRandom();
         random.nextBytes(randBytes);
         return randBytes;
-    }
-
-    //use this to replace "REPLACETHIS" in sql file for salts
-    //@Test
-    public void replaceSQLFile(){
-        String testPass = "password";
-        byte[] salt = "NotSoRandomSalt?".getBytes(StandardCharsets.ISO_8859_1);
-        KeySpec spec = new PBEKeySpec(testPass.toCharArray(), salt, 65536, 128);
-        try {
-            SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            byte[] hash = f.generateSecret(spec).getEncoded();
-            replaceSQLPassword(new String(hash, StandardCharsets.ISO_8859_1));
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    //Mostly copied off internet
-    public static void replaceSQLPassword(String replaceWith){
-        try {
-            // input the file content to the StringBuffer "input"
-            BufferedReader file = new BufferedReader(new FileReader("src/main/resources/data.sql"));
-            StringBuilder inputBuffer = new StringBuilder();
-            String line;
-
-            while ((line = file.readLine()) != null) {
-                inputBuffer.append(line);
-                inputBuffer.append('\n');
-            }
-            file.close();
-            String inputStr = inputBuffer.toString();
-
-            System.out.println(inputStr); // display the original file for debugging
-
-            // logic to replace lines in the string (could use regex here to be generic)
-            inputStr = inputStr.replace("REPLACETHIS", replaceWith);
-
-            // display the new file for debugging
-            System.out.println("----------------------------------\n" + inputStr);
-
-            // write the new string with the replaced line OVER the same file
-            FileOutputStream fileOut = new FileOutputStream("src/main/resources/data.sql");
-            fileOut.write(inputStr.getBytes());
-            fileOut.close();
-
-        } catch (Exception e) {
-            System.out.println("Problem reading file.");
-        }
     }
 }

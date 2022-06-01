@@ -11,7 +11,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 @Service
-public class ResetServiceImpl implements ResetService {
+public class ResetServiceImpl implements ResetService{
 
     @Autowired
     private ResetRequestRepository resetRequestRepository;
@@ -19,7 +19,7 @@ public class ResetServiceImpl implements ResetService {
     private UserRepository userRepository;
 
     @Override
-    public ResetRequest findById(int id) {
+    public ResetRequest findById(int id){
         Optional<ResetRequest> rp = resetRequestRepository.findById(id);
         return rp.orElse(null);
     }
@@ -32,7 +32,7 @@ public class ResetServiceImpl implements ResetService {
     }
 
     @Override
-    public boolean compareTimestamp(long timeStamp) {
+    public boolean compareTimestamp(long timeStamp){
         long day = 86400000;
         return System.currentTimeMillis() - timeStamp < day;
     }
@@ -40,11 +40,9 @@ public class ResetServiceImpl implements ResetService {
     @Override
     public User reset(String password, ResetRequest resetRequest){
         Optional<User> optionalUser = userRepository.findById(resetRequest.getUserId());
-        System.out.println(resetRequest.toString());
-        if (optionalUser.isPresent()){
+        if (optionalUser.isPresent()) {
             User foundUser = optionalUser.get();
-            foundUser.setPassword(password);
-            foundUser.encryptAndSetPassword();
+            foundUser.encryptAndSetPassword(password);
             return userRepository.save(foundUser);
         }
         throw new EntityNotFoundException();

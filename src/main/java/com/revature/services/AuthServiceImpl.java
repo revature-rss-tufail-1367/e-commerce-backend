@@ -6,14 +6,6 @@ import com.revature.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
-import java.util.Arrays;
 import java.util.Optional;
 
 @Service
@@ -36,32 +28,25 @@ public class AuthServiceImpl implements AuthService{
     }
 
     public User register(User user){
-        user.encryptAndSetPassword();
+        user.encryptAndSetPassword(user.getPassword());
         return userService.save(user);
     }
 
-    private byte[] SaltMaker() {
-        byte[] randBytes = new byte[16];
-        SecureRandom random = new SecureRandom();
-        random.nextBytes(randBytes);
-        return randBytes;
-    }
-  
     @Override
     //TODO replace id with UUID
     public void forgotPassword(String email){
-            Optional<User> possibleUser = userService.findByEmail(email);
-            if(possibleUser.isPresent()){
-                User user = possibleUser.get();
-                ResetRequest request = resetService.createEntry(user.getId());
-                userService.sendEmail(email, request.getId());
-            }
+        Optional<User> possibleUser = userService.findByEmail(email);
+        if (possibleUser.isPresent()) {
+            User user = possibleUser.get();
+            ResetRequest request = resetService.createEntry(user.getId());
+            userService.sendEmail(email, request.getId());
+        }
     }
 
-    public User resetPassword(String password,int resetId) throws ExpiredRequestException {
+    public User resetPassword(String password, int resetId) throws ExpiredRequestException{
 
         ResetRequest resetRequest = resetService.findById(resetId);
-        if(resetService.compareTimestamp(resetRequest.getTimeStamp())){
+        if (resetService.compareTimestamp(resetRequest.getTimeStamp())) {
             return resetService.reset(password, resetRequest);
         }
 
